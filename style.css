@@ -33,7 +33,14 @@ main{
     width: 100px;
 }
 
-#nav #center #right{
+#nav #center {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    padding: 10;
+}
+
+#nav #right{
     display: flex;
     align-items: center;
     gap: 40px;
@@ -43,7 +50,7 @@ main{
     text-decoration: none;
     font-weight: 400;
     color: #013220;
-    font-size: 1vw;
+    font-size: 1.7vw;
     letter-spacing: -1px;
     ;
 }
