@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Donor Dashboard | Trace</title>
+  <link rel="stylesheet" href="donor-dashboard.css">
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="donor-sidebar">
+  <h2>Trace</h2>
+  <nav>
+    <a class="active">Dashboard</a>
+    <a>Explore NGOs</a>
+    <a>My Donations</a>
+    <a>Receipts</a>
+    <a>Support</a>
+    <a class="logout">Logout</a>
+  </nav>
+</aside>
+
+<!-- MAIN -->
+<main class="donor-main">
+
+  <!-- HEADER -->
+  <header class="donor-header">
+    <h1>Welcome, Donor 👋</h1>
+    <span class="verified">PAN Verified ✓</span>
+  </header>
+
+  <!-- STATS -->
+  <section class="donor-stats">
+    <div class="stat-card">
+      <h3>Total Donated</h3>
+      <p>₹25,000</p>
+    </div>
+    <div class="stat-card">
+      <h3>NGOs Supported</h3>
+      <p>6</p>
+    </div>
+    <div class="stat-card">
+      <h3>Active Donations</h3>
+      <p>3</p>
+    </div>
+  </section>
+
+  <!-- NGO FEED -->
+  <section class="donor-section">
+    <h2>NGO Work Feed</h2>
+
+    <div class="ngo-feed">
+      <div class="ngo-card">
+        <h3>Helping Hands Foundation</h3>
+        <p>Status: DARPAN Verified ✓</p>
+        <p>Merit Score: <strong>82</strong> | Rank: #4</p>
+        <button>View Work</button>
+        <button class="secondary">Chat</button>
+      </div>
+
+      <div class="ngo-card">
+        <h3>Green Earth NGO</h3>
+        <p>Status: Audit Pending</p>
+        <p>Merit Score: <strong>65</strong> | Rank: #12</p>
+        <button>View Work</button>
+        <button class="secondary">Chat</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- DONATION ACTION -->
+  <section class="donor-section">
+    <h2>Donate</h2>
+    <div class="donate-box">
+      <p>Before donating, you must agree to NGO refund policy.</p>
+      <label>
+        <input type="checkbox"> I agree to the donation terms
+      </label>
+      <button class="pay">Donate via Razorpay</button>
+    </div>
+  </section>
+
+  <!-- FEEDBACK -->
+  <section class="donor-section">
+    <h2>Give Feedback</h2>
+    <div class="rating">
+      ⭐ ⭐ ⭐ ⭐ ⭐
+    </div>
+  </section>
+
+</main>
+
+<script src="donor-dashboard.js"></script>
+</body>
+</html>

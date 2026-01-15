@@ -1,0 +1,156 @@
+body {
+  margin: 0;
+  font-family: "Segoe UI", sans-serif;
+  background: #f5f5dc;
+  display: flex;
+}
+
+/* SIDEBAR */
+.donor-sidebar {
+  width: 240px;
+  background: #013220;
+  color: #f5f5dc;
+  padding: 30px 20px;
+  min-height: 100vh;
+}
+
+.donor-sidebar h2 {
+  margin-bottom: 40px;
+}
+
+.donor-sidebar nav a {
+  display: block;
+  margin-bottom: 18px;
+  cursor: pointer;
+  opacity: 0.85;
+  transition: 0.3s;
+}
+
+.donor-sidebar nav a:hover,
+.donor-sidebar nav a.active {
+  opacity: 1;
+  transform: translateX(6px);
+}
+
+.logout {
+  margin-top: 40px;
+  color: #ffdddd;
+}
+
+/* MAIN */
+.donor-main {
+  flex: 1;
+  padding: 40px;
+}
+
+/* HEADER */
+.donor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.verified {
+  background: #013220;
+  color: #f5f5dc;
+  padding: 6px 14px;
+  border-radius: 20px;
+}
+
+/* STATS */
+.donor-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
+  gap: 25px;
+  margin: 40px 0;
+}
+
+.stat-card {
+  background: #013220;
+  color: #f5f5dc;
+  padding: 25px;
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+  transition: transform 0.3s;
+}
+
+.stat-card:hover {
+  transform: translateY(-6px);
+}
+
+/* SECTION */
+.donor-section {
+  margin-bottom: 60px;
+}
+
+.donor-section h2 {
+  margin-bottom: 20px;
+}
+
+/* NGO FEED */
+.ngo-feed {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px,1fr));
+  gap: 25px;
+}
+
+.ngo-card {
+  background: #ffffff;
+  color: #013220;
+  padding: 25px;
+  border-radius: 20px;
+  box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+  transition: transform 0.3s;
+}
+
+.ngo-card:hover {
+  transform: translateY(-6px);
+}
+
+.ngo-card button {
+  margin-top: 15px;
+  padding: 10px 18px;
+  border: none;
+  cursor: pointer;
+  background: #013220;
+  color: #f5f5dc;
+  border-radius: 12px;
+}
+
+.ngo-card button.secondary {
+  background: transparent;
+  color: #013220;
+  border: 2px solid #013220;
+  margin-left: 10px;
+}
+
+/* DONATE */
+.donate-box {
+  background: #013220;
+  color: #f5f5dc;
+  padding: 30px;
+  border-radius: 20px;
+}
+
+.pay {
+  margin-top: 20px;
+  padding: 12px 24px;
+  font-weight: bold;
+}
+
+/* RATING */
+.rating {
+  font-size: 28px;
+  cursor: pointer;
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+  .donor-sidebar {
+    display: none;
+  }
+
+  .donor-main {
+    padding: 25px;
+  }
+}

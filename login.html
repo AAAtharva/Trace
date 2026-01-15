@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login | Trace</title>
+  <link rel="stylesheet" href="logins.css">
+</head>
+<body>
+
+<div class="auth-container">
+  <div class="auth-card">
+
+    <!-- TOGGLE -->
+    <div class="auth-toggle">
+      <button id="donorBtn" class="active">Donor</button>
+      <button id="ngoBtn">NGO</button>
+      <div class="slider"></div>
+    </div>
+
+    <!-- FORMS -->
+    <div class="forms">
+
+      <!-- DONOR -->
+      <form id="donorForm" class="form active">
+        <h2>Donor Login</h2>
+
+        <input type="text" placeholder="Name" required>
+        <input type="email" placeholder="Email" required>
+        <input type="password" placeholder="Password" required>
+
+        <button type="submit">Login</button>
+
+        <p class="switch">New donor? <a onclick="toggleSignup()" href="signup.html">Sign up</a></p>
+      </form>
+
+      <!-- NGO -->
+      <form id="ngoForm" class="form">
+        <h2>NGO Login</h2>
+
+        <input type="text" placeholder="NGO Name" required>
+        <input type="password" placeholder="NGO Password" required>
+
+        <button type="submit">Login</button>
+
+        <p class="switch">New NGO? <a onclick="toggleSignup()" href="signup.html">Register</a></p>
+      </form>
+
+    </div>
+  </div>
+</div>
+
+<script src="login.js"></script>
+</body>
+</html>

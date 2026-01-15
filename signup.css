@@ -1,0 +1,160 @@
+* {
+  box-sizing: border-box;
+  font-family: "Segoe UI", sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #013220, #f5f5dc);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.auth-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.auth-card {
+  width: 430px;
+  background: rgba(245,245,220,0.95);
+  border-radius: 26px;
+  padding: 35px;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.35);
+  position: relative;
+}
+
+/* CLOSE */
+.close-btn {
+  position: absolute;
+  top: 18px;
+  left: 18px;
+  background: transparent;
+  border: none;
+  font-size: 22px;
+  color: #013220;
+  cursor: pointer;
+}
+
+/* TOGGLE */
+.auth-toggle {
+  display: flex;
+  background: #013220;
+  border-radius: 30px;
+  position: relative;
+  margin-bottom: 30px;
+}
+
+.auth-toggle button {
+  flex: 1;
+  padding: 12px;
+  background: transparent;
+  border: none;
+  color: #f5f5dc;
+  font-weight: 600;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.auth-toggle button.active {
+  color: #013220;
+}
+
+.slider {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 50%;
+  height: calc(100% - 8px);
+  background: #f5f5dc;
+  border-radius: 26px;
+  transition: 0.4s ease;
+}
+
+/* FORMS */
+.form {
+  display: none;
+  animation: fadeUp 0.4s ease;
+}
+
+.form.active {
+  display: block;
+}
+
+.form h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #013220;
+}
+
+.form input,
+.form select {
+  width: 100%;
+  padding: 12px 15px;
+  margin-bottom: 14px;
+  border-radius: 14px;
+  border: 1px solid #ccc;
+}
+
+.form button {
+  width: 100%;
+  padding: 12px;
+  background: #013220;
+  color: #f5f5dc;
+  border: none;
+  border-radius: 18px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* MOBILE */
+@media (max-width: 480px) {
+  .auth-card {
+    width: 90%;
+  }
+}
+/* SLIDE PANEL */
+.slide {
+  overflow: hidden;
+}
+
+.form-slider {
+  display: flex;
+  width: 200%;
+  transition: transform 0.5s ease;
+}
+
+.form {
+  width: 50%;
+  padding-right: 20px;
+}
+
+/* OTP */
+.otp-box {
+  display: flex;
+  gap: 10px;
+}
+
+.otp-box button {
+  background: #013220;
+  color: #f5f5dc;
+  border-radius: 10px;
+}
+
+/* STATUS TEXT */
+small {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 13px;
+}
+
+/* AI VALIDATION COLORS */
+.success { color: green; }
+.error { color: red; }

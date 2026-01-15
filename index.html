@@ -3,25 +3,306 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Trace - NGO Financial Management</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="main">
         <div id="home">
-            <div id="nav">
-                <img src="navlogo.png" alt="">
-                <div id="center">
-                    <a href="index.html">Home</a>
-                    <a href="">About</a>
-                    <a href="">Ranking</a>
-                    <a href="">How it works</a>
+<nav id="nav">
+  <div class="nav-logo">
+    <img src="navlogo.png" alt="Trace Logo">
+  </div>
+
+  <div class="nav-links" id="navLinks">
+    <a href="index.html" class="active">Home</a>
+    <a href="about.html">About</a>
+    <a href="dashboard.html">Ranking</a>
+    <a href="how-it-works.html">How it works</a>
+  </div>
+
+  <div class="nav-actions">
+    <!-- Login state (replace with profile after auth) -->
+    <a href="login.html" class="login-btn">Login</a>
+
+    <!-- Mobile -->
+    <div class="hamburger" onclick="toggleMenu()">☰</div>
+  </div>
+</nav>
+
+
+<section id="frontbody">
+  <div class="hero-overlay"></div>
+
+  <div class="hero-content">
+    <h1>
+      Transparent NGO Financial<br />
+      Management
+    </h1>
+
+    <h5>
+      Track donations, verify impact, and support NGOs with confidence
+    </h5>
+
+    <div id="bottom">
+      <button>Get Started →</button>
+      <button href="how-it-works.html">Learn More</button>
+    </div>
+  </div>
+</section>
+
+
+            <section class="why-trace">
+                <h2>Why Choose <span>Trace?</span></h2>
+
+                <div class="why-grid">
+                <div class="why-card">
+                  <div class="icon blue">↗</div>
+                  <h3>Performance Tracking</h3>
+                  <p>
+                    NGOs earn points based on their work and proof submissions,
+                    creating a transparent and merit-based ranking system.
+                  </p>
                 </div>
-                <div id="left">
-                    <button>Login</button>
+            
+                <div class="why-card">
+                  <div class="icon green">👥</div>
+                  <h3>For NGOs & Donors</h3>
+                  <p>
+                    Separate dashboards for NGOs to manage donations and
+                    donors to track their contributions with clarity.
+                  </p>
                 </div>
-            </div>
+
+                <div class="why-card">
+                  <div class="icon purple">🛡</div>
+                  <h3>Transparent & Secure</h3>
+                  <p>
+                    Every donation and proof of work is tracked securely,
+                    ensuring accountability, trust, and confidence.
+                  </p>
+                </div>
+                </div>
+            </section>
+
+<section class="how-work">
+  <h2>How Trace Works</h2>
+  <p class="how-subtitle">
+    A point-based system that motivates NGOs, builds trust, and ensures real impact
+  </p>
+
+  <div class="how-container">
+
+    <!-- STEPS -->
+    <div class="how-steps">
+      <div class="how-step active" data-step="0">1</div>
+      <div class="how-step" data-step="1">2</div>
+      <div class="how-step" data-step="2">3</div>
+      <div class="how-step" data-step="3">4</div>
+
+      <div class="how-progress">
+        <div class="how-progress-fill"></div>
+      </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="how-content">
+      <div class="how-card active">
+        <h3>NGO Verification</h3>
+        <p>
+          NGOs register using official IDs and verification details.
+          This ensures only legitimate organizations are ranked.
+        </p>
+      </div>
+
+      <div class="how-card">
+        <h3>Donations & Activity</h3>
+        <p>
+          Donors support NGOs they trust. Each donation becomes
+          a tracked and measurable activity.
+        </p>
+      </div>
+
+      <div class="how-card">
+        <h3>Proof of Work</h3>
+        <p>
+          NGOs upload bills, images, and updates.
+          Points are awarded only for verified work.
+        </p>
+      </div>
+
+      <div class="how-card">
+        <h3>Points, Ranking & Reset</h3>
+        <p>
+          NGOs earn points based on impact. Rankings reset monthly,
+          encouraging continuous, honest work.
+        </p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<footer class="site-footer">
+
+  <!-- ANIMATED DIVIDER -->
+  <div class="footer-divider"></div>
+
+  <div class="footer-container">
+
+    <!-- BRAND -->
+    <div class="footer-brand">
+      <h2>Trace</h2>
+      <p>
+        A transparent NGO funding platform that verifies impact,
+        rewards real work, and builds donor trust through merit-based rankings.
+      </p>
+
+      <!-- SOCIALS -->
+      <div class="footer-socials">
+        <a href="#" aria-label="LinkedIn">🔗</a>
+        <a href="#" aria-label="GitHub">🐙</a>
+        <a href="#" aria-label="Twitter">🐦</a>
+      </div>
+    </div>
+
+    <!-- PLATFORM -->
+    <div class="footer-links">
+      <h4>Platform</h4>
+      <a href="index.html">Home</a>
+      <a href="how-it-works.html">How It Works</a>
+      <a href="dashboard.html">Leaderboard</a>
+      <a href="login.html">Login</a>
+    </div>
+
+    <!-- ROLES -->
+    <div class="footer-links">
+      <h4>Roles</h4>
+      <a href="#">For Donors</a>
+      <a href="#">For NGOs</a>
+      <a href="#">For Admins</a>
+      <a href="#">Verification</a>
+    </div>
+
+    <!-- LEGAL -->
+    <div class="footer-links">
+      <h4>Legal</h4>
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms & Conditions</a>
+      <a href="#">Contact Support</a>
+    </div>
+
+  </div>
+
+  <!-- BOTTOM -->
+  <div class="footer-bottom">
+    <p>© 2026 Trace · Built for transparency & impact</p>
+  </div>
+
+  <!-- BACK TO TOP -->
+  <button id="backToTop" onclick="scrollToTop()">↑</button>
+</footer>
         </div>
     </div>
 </body>
+<script>
+/* MOBILE MENU */
+function toggleMenu() {
+  document.getElementById("navLinks").classList.toggle("active");
+}
+
+/* SCROLL EFFECT */
+window.addEventListener("scroll", () => {
+  const nav = document.getElementById("nav");
+  nav.classList.toggle("scrolled", window.scrollY > 50);
+});
+
+/* ACTIVE LINK */
+document.querySelectorAll(".nav-links a").forEach(link => {
+  if (link.href === window.location.href) {
+    link.classList.add("active");
+  }
+});
+window.addEventListener("scroll", () => {
+  cards.forEach(card => {
+    const top = card.getBoundingClientRect().top;
+    if (top < window.innerHeight - 100) {
+      card.style.opacity = "1";
+      card.style.transform = "translateY(0)";
+    }
+  });
+});
+
+/* SCROLL REVEAL */
+const revealCards = document.querySelectorAll(".reveal");
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.style.opacity = "1";
+      entry.target.style.transform = "translateY(0)";
+    }
+  });
+}, { threshold: 0.2 });
+
+revealCards.forEach(card => observer.observe(card));
+
+/* COUNT UP */
+const counters = document.querySelectorAll(".counter");
+
+counters.forEach(counter => {
+  const update = () => {
+    const target = +counter.dataset.target;
+    const current = +counter.innerText;
+    const increment = target / 50;
+
+    if (current < target) {
+      counter.innerText = Math.ceil(current + increment);
+      setTimeout(update, 40);
+    } else {
+      counter.innerText = target;
+    }
+  };
+  update();
+});
+/* BACK TO TOP */
+window.addEventListener("scroll", () => {
+  document.getElementById("backToTop").style.display =
+    window.scrollY > 400 ? "block" : "none";
+});
+
+function scrollToTop() {
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+/* NEWSLETTER (FRONTEND READY) */
+function subscribeNewsletter(e) {
+  e.preventDefault();
+  alert("Thanks for subscribing to Trace updates!");
+}
+
+const steps = document.querySelectorAll(".how-step");
+const cards = document.querySelectorAll(".how-card");
+const progress = document.querySelector(".how-progress-fill");
+
+steps.forEach((step, index) => {
+  step.addEventListener("click", () => {
+    // Active step
+    steps.forEach(s => s.classList.remove("active"));
+    step.classList.add("active");
+
+    // Content
+    cards.forEach(c => c.classList.remove("active"));
+    cards[index].classList.add("active");
+
+    // Progress
+    progress.style.width = `${(index + 1) * 25}%`;
+  });
+});
+
+
+</script>
+
+
+
 </html>
