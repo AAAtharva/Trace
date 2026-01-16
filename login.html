@@ -1,55 +1,269 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Login | Trace</title>
-  <link rel="stylesheet" href="logins.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trace | Secure Access</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-beige: #f5f5dc;
+            --dark-green: #013220;
+            --forest-light: #024d32;
+            --accent-gold: #d4af37;
+            --white: #ffffff;
+            --glass: rgba(255, 255, 255, 0.95);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: linear-gradient(135deg, var(--bg-beige) 0%, #e8e8c8 100%);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            color: var(--dark-green);
+        }
+
+        /* Decorative Background Elements */
+        .circle {
+            position: absolute; border-radius: 50%; background: var(--dark-green); opacity: 0.05; z-index: 0;
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 450px;
+            background: var(--glass);
+            padding: 40px;
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(1, 50, 32, 0.15);
+            position: relative;
+            z-index: 10;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            text-align: center;
+        }
+
+        .logo { font-size: 2.2rem; font-weight: 800; margin-bottom: 10px; color: var(--dark-green); letter-spacing: 2px; }
+        .logo i { color: var(--accent-gold); }
+
+        /* Role Switcher (Donor vs NGO) */
+        .role-switcher {
+            display: flex;
+            background: #eee;
+            padding: 5px;
+            border-radius: 15px;
+            margin: 25px 0;
+            position: relative;
+        }
+        .role-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: #777;
+            z-index: 1;
+            transition: 0.3s;
+        }
+        .role-btn.active { color: var(--white); }
+        .slider {
+            position: absolute;
+            width: calc(50% - 5px);
+            height: calc(100% - 10px);
+            background: var(--dark-green);
+            left: 5px;
+            border-radius: 12px;
+            transition: 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        .ngo-active .slider { transform: translateX(100%); }
+
+        .form-title { font-size: 1.2rem; margin-bottom: 25px; font-weight: 600; }
+        
+        .input-group { position: relative; margin-bottom: 18px; text-align: left; }
+        .input-group i { position: absolute; left: 15px; top: 16px; color: #999; }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 14px 14px 14px 45px;
+            border: 1.5px solid #e0e0d0;
+            border-radius: 12px;
+            outline: none;
+            transition: 0.3s;
+            background: #fafafa;
+            font-size: 0.95rem;
+        }
+        .input-group input:focus { border-color: var(--dark-green); background: #fff; }
+
+        .btn-auth {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            background: var(--dark-green);
+            color: var(--bg-beige);
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+        .btn-auth:hover { filter: brightness(1.2); transform: translateY(-2px); }
+
+        .toggle-link { margin-top: 20px; font-size: 0.9rem; color: #666; }
+        .toggle-link span { color: var(--dark-green); font-weight: 700; cursor: pointer; text-decoration: underline; }
+
+        .auth-view { display: none; animation: fadeIn 0.4s ease; }
+        .auth-view.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+    </style>
 </head>
 <body>
 
-<div class="auth-container">
-  <div class="auth-card">
+    <div class="circle" style="width: 400px; height: 400px; top: -100px; left: -100px;"></div>
+    <div class="circle" style="width: 300px; height: 300px; bottom: -50px; right: -50px; background: var(--accent-gold);"></div>
 
-    <!-- TOGGLE -->
-    <div class="auth-toggle">
-      <button id="donorBtn" class="active">Donor</button>
-      <button id="ngoBtn">NGO</button>
-      <div class="slider"></div>
+    <div class="auth-container">
+        <div class="logo">TRACE</div>
+        <p id="tagline" style="font-size: 0.85rem; color: #888;">Transparency in Every Penny.</p>
+
+        <div class="role-switcher" id="roleBox">
+            <div class="slider"></div>
+            <button class="role-btn active" onclick="setRole('donor')">DONOR</button>
+            <button class="role-btn" onclick="setRole('ngo')">NGO</button>
+        </div>
+
+        <div id="donor-login" class="auth-view active">
+            <h3 class="form-title">Donor Sign In</h3>
+            <div class="input-group">
+                <i class="fas fa-envelope"></i>
+                <input type="email" placeholder="Email Address">
+            </div>
+            <div class="input-group">
+                <i class="fas fa-lock"></i>
+                <input type="password" placeholder="Password">
+            </div>
+            <button class="btn-auth" onclick="handleAuth('donor')">Sign In</button>
+            <p class="toggle-link">New to Trace? <span onclick="showView('donor-signup')">Create Account</span></p>
+        </div>
+
+        <div id="donor-signup" class="auth-view">
+            <h3 class="form-title">Join as a Donor</h3>
+            <div class="input-group">
+                <i class="fas fa-user"></i>
+                <input type="text" placeholder="Full Name">
+            </div>
+            <div class="input-group">
+                <i class="fas fa-envelope"></i>
+                <input type="email" placeholder="Email Address">
+            </div>
+            <div class="input-group">
+                <i class="fas fa-id-card"></i>
+                <input type="text" placeholder="PAN Number (Required for 80G)">
+            </div>
+            <button class="btn-auth" onclick="handleAuth('donor')">Register</button>
+            <p class="toggle-link">Already have an account? <span onclick="showView('donor-login')">Sign In</span></p>
+        </div>
+
+        <div id="ngo-login" class="auth-view">
+            <h3 class="form-title">NGO Admin Portal</h3>
+            <div class="input-group">
+                <i class="fas fa-envelope"></i>
+                <input type="email" placeholder="Work Email">
+            </div>
+            <div class="input-group">
+                <i class="fas fa-lock"></i>
+                <input type="password" placeholder="Password">
+            </div>
+            <button class="btn-auth" onclick="handleAuth('ngo')">Login</button>
+            <p class="toggle-link">Register your NGO? <span onclick="showView('ngo-signup')">Get Started</span></p>
+        </div>
+
+        <div id="ngo-signup" class="auth-view">
+            <h3 class="form-title">NGO Registration</h3>
+            <div class="input-group">
+                <i class="fas fa-university"></i>
+                <input type="text" placeholder="Organization Legal Name">
+            </div>
+            <div class="input-group">
+                <i class="fas fa-tags"></i>
+                <select id="ngoType">
+                    <option value="" disabled selected>Select NGO Type</option>
+                    <option value="trust">Charitable Trust</option>
+                    <option value="society">Registered Society</option>
+                    <option value="section8">Section 8 Company</option>
+                    <option value="other">Other Foundations</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <i class="fas fa-certificate"></i>
+                <input type="text" placeholder="NGO DARPAN ID">
+            </div>
+            <div class="input-group">
+                <i class="fas fa-envelope"></i>
+                <input type="email" placeholder="Admin Work Email">
+            </div>
+            <button class="btn-auth" onclick="handleAuth('ngo')">Submit for Verification</button>
+            <p class="toggle-link">Already registered? <span onclick="showView('ngo-login')">Sign In</span></p>
+        </div>
     </div>
 
-    <!-- FORMS -->
-    <div class="forms">
+    <script>
+        // Switch between Donor and NGO context
+        function setRole(role) {
+            const roleBox = document.getElementById('roleBox');
+            const btns = document.querySelectorAll('.role-btn');
+            const tagline = document.getElementById('tagline');
+            
+            if(role === 'ngo') {
+                roleBox.classList.add('ngo-active');
+                btns[0].classList.remove('active');
+                btns[1].classList.add('active');
+                tagline.innerText = "Empowering NGOs with Trust.";
+                showView('ngo-login');
+            } else {
+                roleBox.classList.remove('ngo-active');
+                btns[1].classList.remove('active');
+                btns[0].classList.add('active');
+                tagline.innerText = "Transparency in Every Penny.";
+                showView('donor-login');
+            }
+        }
 
-      <!-- DONOR -->
-      <form id="donorForm" class="form active">
-        <h2>Donor Login</h2>
+        // Switch between Login and Signup forms
+        function showView(viewId) {
+            document.querySelectorAll('.auth-view').forEach(v => v.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+        }
 
-        <input type="text" placeholder="Name" required>
-        <input type="email" placeholder="Email" required>
-        <input type="password" placeholder="Password" required>
+        /**
+         * REDIRECTION ENGINE
+         * Connects the auth process to the dashboards
+         */
+        function handleAuth(userType) {
+            // Get the button that was clicked
+            const btn = event.target;
+            const originalText = btn.innerText;
+            
+            // UI Feedback
+            btn.innerText = "Processing...";
+            btn.style.opacity = "0.7";
+            btn.disabled = true;
 
-        <button type="submit">Login</button>
-
-        <p class="switch">New donor? <a onclick="toggleSignup()" href="signup.html">Sign up</a></p>
-      </form>
-
-      <!-- NGO -->
-      <form id="ngoForm" class="form">
-        <h2>NGO Login</h2>
-
-        <input type="text" placeholder="NGO Name" required>
-        <input type="password" placeholder="NGO Password" required>
-
-        <button type="submit">Login</button>
-
-        <p class="switch">New NGO? <a onclick="toggleSignup()" href="signup.html">Register</a></p>
-      </form>
-
-    </div>
-  </div>
-</div>
-
-<script src="login.js"></script>
+            setTimeout(() => {
+                if(userType === 'donor') {
+                    // Redirects to donordash.html
+                    window.location.href = 'donordash.html';
+                } else if(userType === 'ngo') {
+                    // Redirects to ngodash.html
+                    window.location.href = 'ngodash.html';
+                }
+            }, 1000);
+        }
+    </script>
 </body>
 </html>

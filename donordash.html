@@ -1,107 +1,389 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Donor Dashboard | Trace</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trace | Donor Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-  <link rel="stylesheet" href='dashboard.css'">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg-beige: #f5f5dc;
+            --dark-green: #013220;
+            --forest-light: #024d32;
+            --accent-gold: #d4af37;
+            --white: #ffffff;
+            --text-grey: #4a4a4a;
+            --shadow: 0 8px 30px rgba(1, 50, 32, 0.08);
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Inter', -apple-system, sans-serif;
+            background-color: var(--bg-beige);
+            color: var(--dark-green);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* --- SIDEBAR --- */
+        nav {
+            width: 280px;
+            background-color: var(--dark-green);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            color: var(--bg-beige);
+            box-shadow: 4px 0 20px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+
+        .logo { 
+            font-size: 1.8rem; font-weight: 800; margin-bottom: 20px; 
+            display: flex; align-items: center; gap: 10px; letter-spacing: 1px; color: var(--white); 
+        }
+
+        .user-profile {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .user-avatar { width: 40px; height: 40px; background: var(--accent-gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: var(--dark-green); }
+        .verification-badge { font-size: 0.7rem; background: #d4edda; color: #155724; padding: 2px 8px; border-radius: 10px; display: inline-block; margin-top: 4px; }
+
+        nav ul { list-style: none; padding: 0; flex: 1; }
+        nav ul li { 
+            padding: 16px; margin-bottom: 10px; cursor: pointer; border-radius: 12px; 
+            transition: 0.3s; display: flex; align-items: center; gap: 15px; opacity: 0.8; font-weight: 500;
+        }
+        nav ul li:hover, nav ul li.active { background: var(--white); color: var(--dark-green); opacity: 1; transform: translateX(5px); box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+
+        /* --- MAIN AREA --- */
+        main { flex: 1; padding: 40px; overflow-y: auto; scroll-behavior: smooth; }
+
+        .page-title { font-size: 2rem; margin-bottom: 10px; font-weight: 800; }
+        .subtitle { color: var(--text-grey); margin-bottom: 30px; font-size: 1rem; }
+
+        .card { background: var(--white); border-radius: 20px; padding: 25px; box-shadow: var(--shadow); transition: 0.3s; margin-bottom: 25px; border: 1px solid rgba(0,0,0,0.03); }
+        
+        /* Buttons */
+        .btn { padding: 10px 20px; border-radius: 10px; border: none; cursor: pointer; font-weight: 600; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; font-size: 0.9rem; }
+        .btn-primary { background: var(--dark-green); color: var(--bg-beige); }
+        .btn-primary:hover { background: var(--forest-light); }
+        .btn-secondary { background: #f0f0f0; color: var(--dark-green); }
+        .btn-secondary:hover { background: #e0e0e0; }
+        .btn-outline { border: 1px solid var(--dark-green); background: transparent; color: var(--dark-green); }
+        .btn-outline:hover { background: var(--bg-beige); }
+
+        /* Tables for Vault */
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 15px; color: #888; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid #eee; }
+        td { padding: 18px 15px; border-bottom: 1px solid #eee; vertical-align: middle; }
+        
+        /* Grid Layouts */
+        .ngo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
+        .ngo-card { position: relative; overflow: hidden; padding: 0; }
+        .ngo-header { height: 120px; background: var(--forest-light); position: relative; }
+        .ngo-body { padding: 40px 20px 20px 20px; }
+        .ngo-logo { width: 60px; height: 60px; background: white; border-radius: 50%; position: absolute; bottom: -30px; left: 20px; border: 4px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        
+        .trust-meter { height: 6px; background: #eee; border-radius: 10px; margin: 15px 0; overflow: hidden; }
+        .trust-fill { height: 100%; background: linear-gradient(90deg, var(--accent-gold), var(--forest-light)); }
+
+        /* Tabs Logic */
+        .view-section { display: none; animation: fadeIn 0.4s ease-out; }
+        .view-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Notification Toast */
+        #toast {
+            visibility: hidden; min-width: 250px; background-color: #333; color: #fff; text-align: center; border-radius: 8px; padding: 16px; position: fixed; z-index: 2000; left: 50%; bottom: 30px; transform: translateX(-50%); font-size: 17px;
+        }
+        #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
+        @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
+        @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
+
+    </style>
 </head>
 <body>
 
-<nav id="nav">
-  <div class="nav-logo">
-    <img src="navlogo.png" alt="Trace">
-  </div>
-
-  <div class="nav-links" id="navLinks">
-    <a href="/">Home</a>
-    <a href="/donor-dashboard/" class="active">Dashboard</a>
-  </div>
-
-  <div class="nav-actions">
-    <a href="/logout/" class="login-btn">Logout</a>
-    <div class="hamburger" onclick="toggleMenu()">☰</div>
-  </div>
+<nav>
+    <div class="logo"><i class="fas fa-fingerprint"></i> TRACE</div>
+    <div class="user-profile">
+        <div class="user-avatar">JD</div>
+        <div>
+            <div style="font-weight: 700; font-size: 0.9rem;">John Doe</div>
+            <div class="verification-badge"><i class="fas fa-check-circle"></i> PAN Verified</div>
+        </div>
+    </div>
+    <ul>
+        <li onclick="switchTab('explore')" class="nav-item active"><i class="fas fa-globe-asia"></i> Explore NGOs</li>
+        <li onclick="switchTab('impact')" class="nav-item"><i class="fas fa-chart-pie"></i> My Impact</li>
+        <li onclick="switchTab('vault')" class="nav-item"><i class="fas fa-file-invoice-dollar"></i> Trace Vault</li>
+    </ul>
 </nav>
 
-<main class="container">
+<main>
 
-  <header class="page-header">
-    <h1>Donor Dashboard</h1>
-    <p class="subtitle">Track your impact with complete transparency</p>
-  </header>
-
-  <!-- STATS -->
-  <section class="stats-grid reveal">
-    <div class="stat-card">
-      <p>Total Donated</p>
-      <h2 class="counter" data-target="125000">0</h2>
+    <div id="explore" class="view-section active">
+        <h1 class="page-title">Make a Difference</h1>
+        <p class="subtitle">Discover verified NGOs with transparent track records.</p>
+        
+        <div class="ngo-grid">
+            <div class="card ngo-card">
+                <div class="ngo-header">
+                    <div style="position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.2); color: white; padding: 5px 10px; border-radius: 20px; font-size: 0.75rem;"><i class="fas fa-shield-alt"></i> Verified</div>
+                </div>
+                <div class="ngo-logo"><img src="https://via.placeholder.com/60/013220/FFFFFF?text=GH" style="border-radius:50%; width:100%;"></div>
+                <div class="ngo-body">
+                    <h3>GreenHope Foundation</h3>
+                    <p style="color: #666; font-size: 0.9rem;">Reforestation & Rural Education</p>
+                    <div class="trust-meter"><div class="trust-fill" style="width: 94%;"></div></div>
+                    <button class="btn btn-primary" style="width:100%; justify-content: center;">Donate Now</button>
+                </div>
+            </div>
+             <div class="card ngo-card">
+                <div class="ngo-header" style="background:#024d32"></div>
+                <div class="ngo-logo"><img src="https://via.placeholder.com/60/d4af37/FFFFFF?text=EF" style="border-radius:50%; width:100%;"></div>
+                <div class="ngo-body">
+                    <h3>EduFirst Initiative</h3>
+                    <p style="color: #666; font-size: 0.9rem;">Books for slum children</p>
+                    <div class="trust-meter"><div class="trust-fill" style="width: 88%;"></div></div>
+                    <button class="btn btn-primary" style="width:100%; justify-content: center;">Donate Now</button>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="stat-card">
-      <p>NGOs Supported</p>
-      <h2 class="counter" data-target="14">0</h2>
-    </div>
-  </section>
-
-  <!-- TABS -->
-  <div class="tabs">
-    <button class="tab active" data-tab="overview">Overview</button>
-    <button class="tab" data-tab="donations">My Donations</button>
-    <button class="tab" data-tab="browse">Browse NGOs</button>
-  </div>
-
-  <!-- OVERVIEW -->
-  <section id="overview" class="tab-content active reveal">
-    <div class="card">
-      <h3>NGO Growth & Merit Trend</h3>
-      <canvas id="ngoGrowthChart"></canvas>
-    </div>
-  </section>
-
-  <!-- DONATIONS -->
-  <section id="donations" class="tab-content reveal">
-    <div class="card">
-      <table>
-        <thead>
-          <tr>
-            <th>NGO</th>
-            <th>Amount</th>
-            <th>Purpose</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody id="donationTable"></tbody>
-      </table>
-    </div>
-  </section>
-
-  <!-- BROWSE -->
-  <section id="browse" class="tab-content reveal">
-    <input id="searchInput" placeholder="Search NGOs">
-
-    <div class="filters">
-      <select id="countryFilter">
-        <option value="">All Countries</option>
-        <option value="India">India</option>
-      </select>
-
-      <select id="categoryFilter">
-        <option value="">All Categories</option>
-        <option>Education</option>
-        <option>Healthcare</option>
-        <option>Environment</option>
-      </select>
+    <div id="impact" class="view-section">
+        <h1 class="page-title">Your Impact Report</h1>
+        <div class="card">
+            <h3>Usage Breakdown</h3>
+            <div style="height: 300px; display: flex; justify-content: center;">
+                <canvas id="donorChart"></canvas>
+            </div>
+        </div>
     </div>
 
-    <div id="ngoGrid" class="ngo-grid"></div>
-  </section>
+    <div id="vault" class="view-section">
+        <h1 class="page-title">Trace Vault</h1>
+        <p class="subtitle">Download your tax documents and receipts instantly.</p>
+
+        <div class="card">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Transaction ID</th>
+                        <th>NGO Name</th>
+                        <th>Amount</th>
+                        <th style="text-align: right;">Downloads</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>12 Jan 2026</td>
+                        <td>TRC-229-X88</td>
+                        <td>GreenHope Foundation</td>
+                        <td>₹10,000</td>
+                        <td style="text-align: right;">
+                            <button class="btn btn-outline" onclick="generateReceipt('GreenHope Foundation', '10,000', '12 Jan 2026', 'TRC-229-X88')">
+                                <i class="fas fa-file-invoice"></i> Receipt
+                            </button>
+                            <button class="btn btn-secondary" onclick="generate80G('GreenHope Foundation', '10,000', '12 Jan 2026', 'TRC-229-X88', 'AAA-GH-99881')">
+                                <i class="fas fa-certificate"></i> 80G Cert
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>20 Dec 2025</td>
+                        <td>TRC-104-Y22</td>
+                        <td>EduFirst Initiative</td>
+                        <td>₹5,000</td>
+                        <td style="text-align: right;">
+                            <button class="btn btn-outline" onclick="generateReceipt('EduFirst Initiative', '5,000', '20 Dec 2025', 'TRC-104-Y22')">
+                                <i class="fas fa-file-invoice"></i> Receipt
+                            </button>
+                            <button class="btn btn-secondary" onclick="generate80G('EduFirst Initiative', '5,000', '20 Dec 2025', 'TRC-104-Y22', 'BBB-EF-11002')">
+                                <i class="fas fa-certificate"></i> 80G Cert
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
 </main>
 
-<script src="{% static 'js/dashboard.js' %}"></script>
+<div id="toast">Downloading Document...</div>
+
+<script>
+    // --- TABS LOGIC ---
+    function switchTab(tabId) {
+        document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        event.currentTarget.classList.add('active');
+    }
+
+    // --- CHART JS ---
+    const ctx = document.getElementById('donorChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['GreenHope (Environment)', 'EduFirst (Education)'],
+            datasets: [{
+                data: [10000, 5000],
+                backgroundColor: ['#013220', '#d4af37'],
+                borderWidth: 0
+            }]
+        }
+    });
+
+    // --- TOAST NOTIFICATION ---
+    function showToast(msg) {
+        var x = document.getElementById("toast");
+        x.innerText = msg;
+        x.className = "show";
+        setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+    }
+
+    // --- AUTOMATED PDF GENERATION LOGIC ---
+    
+    // 1. GENERATE RECEIPT
+    function generateReceipt(ngoName, amount, date, txnId) {
+        showToast("Generating Payment Receipt...");
+        
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        // Header Background
+        doc.setFillColor(1, 50, 32); // Dark Green
+        doc.rect(0, 0, 210, 40, 'F');
+
+        // Header Text
+        doc.setTextColor(255, 255, 255);
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(24);
+        doc.text("TRACE", 20, 26);
+        
+        doc.setFontSize(14);
+        doc.setFont("helvetica", "normal");
+        doc.text("Payment Receipt", 150, 26);
+
+        // Body Content
+        doc.setTextColor(0, 0, 0);
+        doc.setFontSize(12);
+        
+        let y = 60;
+        doc.text(`Transaction ID:`, 20, y);      doc.text(txnId, 80, y); y+=10;
+        doc.text(`Date:`, 20, y);                doc.text(date, 80, y); y+=10;
+        doc.text(`Paid To:`, 20, y);             doc.text(ngoName, 80, y); y+=10;
+        doc.text(`Donor Name:`, 20, y);          doc.text("John Doe", 80, y); y+=10;
+        
+        y += 10;
+        doc.setDrawColor(200, 200, 200);
+        doc.line(20, y, 190, y); // Separator line
+        y += 15;
+
+        doc.setFontSize(16);
+        doc.setFont("helvetica", "bold");
+        doc.text(`Amount Paid:`, 20, y);
+        doc.setTextColor(1, 50, 32); // Green Color
+        doc.text(`INR ${amount}`, 80, y);
+
+        // Footer
+        doc.setTextColor(150, 150, 150);
+        doc.setFontSize(10);
+        doc.setFont("helvetica", "normal");
+        doc.text("This is a computer generated receipt generated by Trace.", 20, 270);
+        doc.text("Trace Platform | www.trace-ngo.org", 20, 275);
+
+        doc.save(`${txnId}_Receipt.pdf`);
+    }
+
+    // 2. GENERATE 80G CERTIFICATE
+    function generate80G(ngoName, amount, date, txnId, pan) {
+        showToast("Generating 80G Certificate...");
+
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        // Border
+        doc.setLineWidth(1);
+        doc.setDrawColor(1, 50, 32);
+        doc.rect(10, 10, 190, 277);
+        doc.setLineWidth(0.5);
+        doc.rect(12, 12, 186, 273);
+
+        // Header
+        doc.setFont("times", "bold");
+        doc.setFontSize(28);
+        doc.setTextColor(1, 50, 32);
+        doc.text("CERTIFICATE OF DONATION", 105, 40, null, null, "center");
+        
+        doc.setFontSize(12);
+        doc.setTextColor(0, 0, 0);
+        doc.setFont("times", "normal");
+        doc.text("Under Section 80G of the Income Tax Act, 1961", 105, 50, null, null, "center");
+
+        // Body
+        let y = 80;
+        const lineHeight = 12;
+
+        doc.setFontSize(14);
+        doc.text(`Receipt No: ${txnId}`, 20, y); y+=lineHeight;
+        doc.text(`Date: ${date}`, 20, y); y+=20;
+
+        doc.text("This is to certify that a donation of", 20, y);
+        doc.setFont("times", "bold");
+        doc.text(`INR ${amount}`, 100, y); 
+        doc.setFont("times", "normal");
+        y+=lineHeight;
+
+        doc.text("has been received from", 20, y);
+        doc.setFont("times", "bold");
+        doc.text("Mr. John Doe", 70, y);
+        doc.setFont("times", "normal");
+        y+=lineHeight;
+
+        doc.text("towards the charitable activities of", 20, y);
+        doc.setFont("times", "bold");
+        doc.text(ngoName, 95, y);
+        doc.setFont("times", "normal");
+        y+=30;
+
+        // NGO Details Box
+        doc.setDrawColor(0);
+        doc.rect(20, y, 170, 50);
+        y += 10;
+        
+        doc.setFontSize(11);
+        doc.text(`NGO PAN: ${pan}`, 25, y); y+=10;
+        doc.text(`Address: 42, Green Park Avenue, Mumbai, MH`, 25, y); y+=10;
+        doc.text(`80G Registration No: AAAT-80G-2024-X`, 25, y); y+=10;
+        doc.text(`Validity: Perpetuity`, 25, y);
+
+        // Signature Area
+        y += 60;
+        doc.addImage("https://upload.wikimedia.org/wikipedia/commons/e/e4/Signature_sample.svg", "SVG", 140, y, 40, 20); // Placeholder sig
+        doc.text("Authorized Signatory", 140, y+25);
+        doc.text(ngoName, 140, y+30);
+
+        doc.save(`${txnId}_80G_Certificate.pdf`);
+    }
+
+</script>
+
 </body>
 </html>

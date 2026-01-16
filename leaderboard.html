@@ -1,10 +1,135 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>NGO Leaderboard | Trace</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="leaderboard.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trace | NGO Rankings</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* CSS FROM USER + BRANDING */
+        :root {
+            --bg-beige: #f5f5dc;
+            --dark-green: #013220;
+            --forest-light: #024d32;
+            --accent-gold: #d4af37;
+            --white: #ffffff;
+            --shadow: 0 10px 30px rgba(1, 50, 32, 0.08);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--bg-beige);
+            color: var(--dark-green);
+            font-family: 'Inter', -apple-system, sans-serif;
+            padding-top: 100px; /* Space for fixed nav */
+        }
+
+        /* ===== NAVBAR CSS (Provided by User) ===== */
+        #nav {
+            position: fixed; top: 0; width: 100%; padding: 14px 60px;
+            display: flex; align-items: center; justify-content: space-between;
+            background: #f5f5dc; transition: all 0.4s ease; z-index: 999;
+        }
+        #nav.scrolled { background: rgba(245, 245, 220, 0.75); backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0,0,0,0.12); }
+        .nav-logo img { width: 90px; }
+        .nav-links { display: flex; gap: 40px; }
+        .nav-links a { text-decoration: none; color: #013220; font-size: 17px; font-weight: 500; position: relative; transition: color 0.3s ease; }
+        .nav-links a::after { content: ""; position: absolute; left: 0; bottom: -6px; width: 0%; height: 2px; background: #013220; transition: width 0.3s ease; }
+        .nav-links a:hover::after, .nav-links a.active::after { width: 100%; }
+        .nav-actions { display: flex; align-items: center; gap: 20px; }
+        .login-btn { padding: 10px 28px; border: 2px solid #013220; color: #013220; text-decoration: none; font-weight: 600; transition: all 0.3s ease; }
+        .login-btn:hover { background: #013220; color: #f5f5dc; transform: translateY(-2px); }
+        .hamburger { display: none; font-size: 28px; cursor: pointer; color: #013220; }
+
+        /* ===== RANKING UI ===== */
+        .container { max-width: 1100px; margin: 0 auto; padding: 40px 20px; }
+
+        /* Timer Section */
+        .timer-card {
+            background: var(--dark-green);
+            color: var(--bg-beige);
+            padding: 30px;
+            border-radius: 24px;
+            text-align: center;
+            margin-bottom: 60px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(1, 50, 32, 0.2);
+        }
+        .timer-grid {
+            display: flex; justify-content: center; gap: 30px; margin-top: 20px;
+        }
+        .timer-unit { display: flex; flex-direction: column; }
+        .timer-value { font-size: 2.5rem; font-weight: 800; color: var(--accent-gold); }
+        .timer-label { font-size: 0.8rem; text-transform: uppercase; opacity: 0.7; letter-spacing: 1px; }
+
+        /* Podium Section (Top 3) */
+        .podium {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            margin-bottom: 50px;
+            align-items: flex-end;
+        }
+        .podium-card {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 24px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+        .podium-card:hover { transform: translateY(-10px); }
+        .podium-card.rank-1 { border-top: 8px solid var(--accent-gold); padding: 50px 30px; }
+        .podium-card.rank-2 { border-top: 8px solid #C0C0C0; }
+        .podium-card.rank-3 { border-top: 8px solid #CD7F32; }
+        
+        .badge {
+            width: 40px; height: 40px; border-radius: 50%; display: flex;
+            align-items: center; justify-content: center; font-weight: bold;
+            position: absolute; top: -20px; left: 50%; transform: translateX(-50%);
+            color: white; font-size: 1.2rem;
+        }
+        .b-1 { background: var(--accent-gold); }
+        .b-2 { background: #C0C0C0; }
+        .b-3 { background: #CD7F32; }
+
+        .podium-img { width: 80px; height: 80px; border-radius: 50%; margin-bottom: 15px; border: 3px solid #eee; }
+
+        /* Leaderboard Table */
+        .ranking-table {
+            background: var(--white);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+        table { width: 100%; border-collapse: collapse; }
+        th { background: #f8f8f0; padding: 20px; text-align: left; font-size: 0.9rem; color: #666; font-weight: 600; }
+        td { padding: 20px; border-bottom: 1px solid #eee; }
+        
+        .rank-num { font-weight: 800; color: #999; width: 50px; }
+        .ngo-info { display: flex; align-items: center; gap: 15px; }
+        .ngo-mini-img { width: 40px; height: 40px; border-radius: 10px; }
+        
+        .score-pill {
+            background: var(--bg-beige);
+            color: var(--dark-green);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .growth-up { color: #27ae60; font-size: 0.8rem; }
+
+        @media (max-width: 900px) {
+            .podium { grid-template-columns: 1fr; }
+            .podium-card.rank-1 { order: -1; }
+            #nav { padding: 14px 30px; }
+        }
+    </style>
 </head>
 <body>
 
@@ -14,134 +139,134 @@
   </div>
 
   <div class="nav-links" id="navLinks">
-    <a href="index.html" class="active">Home</a>
+    <a href="index.html">Home</a>
     <a href="about.html">About</a>
-    <a href="leaderboard.html">Ranking</a>
+    <a href="leaderboard.html" class="active">Ranking</a>
     <a href="how-it-works.html">How it works</a>
   </div>
 
   <div class="nav-actions">
-    <!-- Login state (replace with profile after auth) -->
     <a href="login.html" class="login-btn">Login</a>
-
-    <!-- Mobile -->
     <div class="hamburger" onclick="toggleMenu()">☰</div>
   </div>
 </nav>
 
-<div class="layout">
+<div class="container">
+    
+    <div class="timer-card">
+        <h2 style="font-weight: 400; letter-spacing: 1px;">MONTHLY RANKING RESET</h2>
+        <div class="timer-grid" id="timer">
+            <div class="timer-unit"><span class="timer-value" id="days">00</span><span class="timer-label">Days</span></div>
+            <div class="timer-unit"><span class="timer-value" id="hours">00</span><span class="timer-label">Hrs</span></div>
+            <div class="timer-unit"><span class="timer-value" id="mins">00</span><span class="timer-label">Min</span></div>
+            <div class="timer-unit"><span class="timer-value" id="secs">00</span><span class="timer-label">Sec</span></div>
+        </div>
+        <p style="margin-top: 20px; opacity: 0.6; font-size: 0.9rem;">Rankings reset on the 1st of every month at 00:00 GMT</p>
+    </div>
 
-  <!-- FILTER PANEL -->
-  <aside class="filters">
-    <h3>Filter NGOs</h3>
+    <div class="podium">
+        <div class="podium-card rank-2">
+            <div class="badge b-2">2</div>
+            <img src="https://via.placeholder.com/80/eee/013220?text=Edu" class="podium-img">
+            <h3>EduFirst</h3>
+            <p style="color: #666; font-size: 0.9rem; margin-bottom: 15px;">Education Sector</p>
+            <div class="score-pill">94.2 Score</div>
+        </div>
+        <div class="podium-card rank-1">
+            <div class="badge b-1"><i class="fas fa-crown"></i></div>
+            <img src="https://via.placeholder.com/100/eee/013220?text=Green" class="podium-img" style="width: 100px; height: 100px;">
+            <h2 style="margin-bottom: 5px;">GreenHope</h2>
+            <p style="color: #666; font-size: 0.9rem; margin-bottom: 20px;">Environmental Impact</p>
+            <div class="score-pill" style="background: var(--accent-gold); color: white;">98.5 Score</div>
+        </div>
+        <div class="podium-card rank-3">
+            <div class="badge b-3">3</div>
+            <img src="https://via.placeholder.com/80/eee/013220?text=Pure" class="podium-img">
+            <h3>PureWater</h3>
+            <p style="color: #666; font-size: 0.9rem; margin-bottom: 15px;">Health & Sanitation</p>
+            <div class="score-pill">91.8 Score</div>
+        </div>
+    </div>
 
-    <input id="searchNGO" placeholder="Search NGO">
-
-    <label>NGO Type</label>
-    <select>
-      <option>All</option>
-      <option>Education</option>
-      <option>Healthcare</option>
-      <option>Environment</option>
-    </select>
-
-    <label>Country</label>
-    <select>
-      <option>All</option>
-      <option>India</option>
-      <option>Other</option>
-    </select>
-
-    <label>State</label>
-    <select>
-      <option>All</option>
-      <option>Maharashtra</option>
-      <option>Karnataka</option>
-      <option>Delhi</option>
-    </select>
-
-    <label>Sort</label>
-    <select>
-      <option>Highest Points</option>
-      <option>Lowest Points</option>
-    </select>
-  </aside>
-
-  <!-- MAIN -->
-  <main class="content">
-
-    <!-- PODIUM -->
-    <section class="podium">
-
-      <div class="podium-card second">
-        <div class="avatar">HF</div>
-        <h4>Helping Hands</h4>
-        <span>1,820 pts</span>
-        <div class="bar">2</div>
-      </div>
-
-      <div class="podium-card first">
-        <div class="avatar">GE</div>
-        <h4>Green Earth</h4>
-        <span>1,950 pts</span>
-        <div class="bar">1</div>
-      </div>
-
-      <div class="podium-card third">
-        <div class="avatar">CF</div>
-        <h4>Care Foundation</h4>
-        <span>1,740 pts</span>
-        <div class="bar">3</div>
-      </div>
-
-    </section>
-
-    <!-- YOUR NGO -->
-    <section class="highlight pulse">
-      <strong>Your NGO</strong>
-      <span>Rank #12 · 1,120 points · Silver Level</span>
-    </section>
-
-    <!-- TABLE -->
-    <section class="table">
-
-      <div class="table-header">
-        <span>Rank</span>
-        <span>NGO</span>
-        <span>Type</span>
-        <span>Location</span>
-        <span>Points</span>
-      </div>
-
-      <div class="table-row" onclick="openProfile()">
-        <span>04 ↑</span>
-        <span>Hope India</span>
-        <span>Education</span>
-        <span>Maharashtra, IN</span>
-        <span>1,610</span>
-      </div>
-
-      <div class="table-row" onclick="openProfile()">
-        <span>05 ↓</span>
-        <span>Seva Trust</span>
-        <span>Healthcare</span>
-        <span>Karnataka, IN</span>
-        <span>1,520</span>
-      </div>
-
-      <div class="table-row" onclick="openProfile()">
-        <span>06</span>
-        <span>Udaan NGO</span>
-        <span>Women Empowerment</span>
-        <span>Delhi, IN</span>
-        <span>1,410</span>
-      </div>
-
-    </section>
-
-  </main>
+    <div class="ranking-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>NGO Foundation</th>
+                    <th>Audit Status</th>
+                    <th>Merit Score</th>
+                    <th>Monthly Growth</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="rank-num">#4</td>
+                    <td class="ngo-info">
+                        <img src="https://via.placeholder.com/40" class="ngo-mini-img">
+                        <strong>Loom Foundation</strong>
+                    </td>
+                    <td><i class="fas fa-check-circle" style="color: #27ae60;"></i> DARPAN Verified</td>
+                    <td><span class="score-pill">88.4</span></td>
+                    <td class="growth-up"><i class="fas fa-caret-up"></i> 12%</td>
+                </tr>
+                <tr>
+                    <td class="rank-num">#5</td>
+                    <td class="ngo-info">
+                        <img src="https://via.placeholder.com/40" class="ngo-mini-img">
+                        <strong>Shelter India</strong>
+                    </td>
+                    <td><i class="fas fa-check-circle" style="color: #27ae60;"></i> DARPAN Verified</td>
+                    <td><span class="score-pill">85.1</span></td>
+                    <td class="growth-up"><i class="fas fa-caret-up"></i> 5.2%</td>
+                </tr>
+                <tr>
+                    <td class="rank-num">#6</td>
+                    <td class="ngo-info">
+                        <img src="https://via.placeholder.com/40" class="ngo-mini-img">
+                        <strong>AnimalAid</strong>
+                    </td>
+                    <td><i class="fas fa-check-circle" style="color: #27ae60;"></i> DARPAN Verified</td>
+                    <td><span class="score-pill">82.9</span></td>
+                    <td class="growth-up"><i class="fas fa-caret-up"></i> 8.1%</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
 
-<script src="leaderboard.js"></script>
+<script>
+    /* NAVBAR LOGIC */
+    function toggleMenu() {
+        document.getElementById("navLinks").classList.toggle("active");
+    }
+
+    window.addEventListener("scroll", () => {
+        document.getElementById("nav").classList.toggle("scrolled", window.scrollY > 50);
+    });
+
+    /* MONTHLY RESET TIMER LOGIC */
+    function updateCountdown() {
+        const now = new Date();
+        // Set target to first day of next month
+        const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+        
+        const diff = nextMonth - now;
+
+        const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const s = Math.floor((diff % (1000 * 60)) / 1000);
+
+        document.getElementById("days").innerText = d.toString().padStart(2, '0');
+        document.getElementById("hours").innerText = h.toString().padStart(2, '0');
+        document.getElementById("mins").innerText = m.toString().padStart(2, '0');
+        document.getElementById("secs").innerText = s.toString().padStart(2, '0');
+    }
+
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
+</script>
+
 </body>
 </html>

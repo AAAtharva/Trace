@@ -1,112 +1,284 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>NGO Dashboard | Trace</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="dashboard.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trace | NGO Command Center</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg-beige: #f5f5dc;
+            --dark-green: #013220;
+            --forest-light: #024d32;
+            --accent-gold: #d4af37;
+            --white: #ffffff;
+            --gray: #666;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', -apple-system, sans-serif; background-color: var(--bg-beige); color: var(--dark-green); display: flex; height: 100vh; overflow: hidden; }
+
+        /* --- SIDEBAR --- */
+        nav { width: 280px; background-color: var(--dark-green); height: 100%; color: var(--bg-beige); display: flex; flex-direction: column; padding: 25px; box-shadow: 4px 0 15px rgba(0,0,0,0.2); z-index: 100; }
+        .logo { font-size: 1.8rem; font-weight: 800; margin-bottom: 40px; color: var(--white); display: flex; align-items: center; gap: 10px; }
+        .logo i { color: var(--accent-gold); }
+        nav ul { list-style: none; flex: 1; }
+        nav ul li { padding: 15px; margin-bottom: 8px; cursor: pointer; border-radius: 12px; transition: var(--transition); display: flex; align-items: center; gap: 12px; opacity: 0.7; font-weight: 500; }
+        nav ul li:hover, nav ul li.active { background: var(--forest-light); opacity: 1; transform: translateX(8px); color: var(--white); }
+        .nav-premium { color: var(--accent-gold) !important; opacity: 1 !important; border: 1px dashed var(--accent-gold); margin-top: 10px; }
+
+        /* --- MAIN LAYOUT --- */
+        main { flex: 1; padding: 40px; overflow-y: auto; background: var(--bg-beige); }
+        .tab-content { display: none; animation: fadeIn 0.4s ease-out; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .card { background: var(--white); padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(1,50,32,0.05); margin-bottom: 25px; border: 1px solid rgba(0,0,0,0.02); }
+        h1 { margin-bottom: 25px; font-size: 2rem; }
+
+        /* --- PRICING GRID --- */
+        .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .price-card { background: white; padding: 35px; border-radius: 25px; text-align: center; border: 2px solid #eee; transition: 0.3s; position: relative; }
+        .price-card.featured { border-color: var(--accent-gold); background: #fffdf5; transform: scale(1.05); z-index: 2; }
+        .price-card h3 { text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+        .price-card h2 { font-size: 2.5rem; margin-bottom: 20px; }
+        .price-features { list-style: none; text-align: left; margin-bottom: 25px; }
+        .price-features li { padding: 10px 0; border-bottom: 1px solid #f0f0f0; font-size: 0.9rem; display: flex; align-items: center; gap: 10px; }
+        .price-features i { color: var(--dark-green); }
+
+        /* --- CHAT SYSTEM --- */
+        .chat-container { display: flex; height: 550px; background: white; border-radius: 20px; overflow: hidden; border: 1px solid #eee; }
+        .chat-list { width: 30%; border-right: 1px solid #eee; background: #fafafa; overflow-y: auto; }
+        .chat-item { padding: 20px; border-bottom: 1px solid #eee; cursor: pointer; transition: 0.2s; }
+        .chat-item:hover, .chat-item.active { background: #f0f0e0; }
+        .chat-main { flex: 1; display: flex; flex-direction: column; }
+        .chat-messages { flex: 1; padding: 25px; overflow-y: auto; background: #fdfdfd; display: flex; flex-direction: column; gap: 15px; }
+        .msg { max-width: 70%; padding: 12px 16px; border-radius: 15px; font-size: 0.95rem; line-height: 1.4; }
+        .msg.received { align-self: flex-start; background: #eee; border-bottom-left-radius: 2px; }
+        .msg.sent { align-self: flex-end; background: var(--dark-green); color: white; border-bottom-right-radius: 2px; }
+
+        /* --- BUTTONS & INPUTS --- */
+        .btn-primary { background: var(--dark-green); color: white; padding: 12px 25px; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; transition: 0.3s; width: 100%; }
+        .btn-primary:hover { background: var(--forest-light); transform: translateY(-2px); }
+        .btn-outline { background: transparent; border: 2px solid var(--dark-green); color: var(--dark-green); padding: 12px; border-radius: 10px; cursor: pointer; font-weight: 600; width: 100%; }
+        input, select, textarea { width: 100%; padding: 12px; border: 1.5px solid #eee; border-radius: 10px; margin-top: 8px; font-family: inherit; }
+    </style>
 </head>
 <body>
 
-<nav id="nav">
-  <div class="nav-logo"><img src="navlogo.png"></div>
-  <div class="nav-links" id="navLinks">
-    <a href="index.html">Home</a>
-    <a href="ngodash.html" class="active">NGO Dashboard</a>
-  </div>
-  <div class="nav-actions">
-    <a href="#" class="login-btn">Logout</a>
-    <div class="hamburger" onclick="toggleMenu()">☰</div>
-  </div>
+<nav>
+    <div class="logo"><i class="fas fa-fingerprint"></i> TRACE</div>
+    <ul>
+        <li onclick="showTab('overview')" class="nav-item active"><i class="fas fa-th-large"></i> Dashboard</li>
+        <li onclick="showTab('funds')" class="nav-item"><i class="fas fa-chart-line"></i> Fund Utilization</li>
+        <li onclick="showTab('ai-chat')" class="nav-item"><i class="fas fa-robot"></i> AI Support Bot</li>
+        <li onclick="showTab('chat')" class="nav-item"><i class="fas fa-comments"></i> Donor Messages</li>
+        <li onclick="showTab('upgrade')" class="nav-item nav-premium"><i class="fas fa-crown"></i> Upgrade to Premium</li>
+        <li onclick="showTab('settings')" class="nav-item"><i class="fas fa-headset"></i> Contact Support</li>
+    </ul>
 </nav>
 
-<main class="container">
-
-<h1>NGO Dashboard</h1>
-<p class="subtitle">Merit & transparency overview</p>
-
-<section class="stats-grid">
-
-  <div class="stat-card green-1">
-    <p class="stat-label">Total Donations</p>
-    <h2 id="totalDonations">—</h2>
-  </div>
-
-  <div class="stat-card green-2">
-    <p class="stat-label">Merit Points</p>
-    <h2 id="meritPoints">—</h2>
-  </div>
-
-  <div class="stat-card green-3">
-    <p class="stat-label">Current Ranking</p>
-    <h2 id="currentRank">—</h2>
-  </div>
-
-</section>
-
-<div class="tabs">
-  <button class="tab active" data-tab="overview">Overview</button>
-  <button class="tab" data-tab="donations">Donations</button>
-  <button class="tab" data-tab="proof">Proof of Work</button>
-</div>
-
-<section id="overview" class="tab-content active">
-  <div class="card">
-    <h3>Merit Growth</h3>
-    <canvas id="meritChart"></canvas>
-  </div>
-</section>
-
-<section id="donations" class="tab-content">
-  <div class="card">
-    <table>
-      <thead>
-        <tr>
-          <th>Donor</th>
-          <th>Amount</th>
-          <th>Date</th>
-        </tr>
-      </thead>
-      <tbody id="ngoDonationTable"></tbody>
-    </table>
-  </div>
-</section>
-
-<!-- PROOF TAB -->
-<section id="proof" class="tab-content">
-  <div class="card">
-    <div class="proof-header">
-      <h3>Proof of Work</h3>
-      <button class="primary-btn" id="openProofModal">Post Proof</button>
+<main>
+    <div id="overview" class="tab-content active">
+        <h1>NGO Command Center</h1>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 25px;">
+            <div class="card" style="background: var(--dark-green); color: white;">
+                <p>Total Funds Raised</p>
+                <h2 style="font-size: 2rem; color: var(--accent-gold);">₹42,80,200</h2>
+            </div>
+            <div class="card">
+                <p>Trust Score</p>
+                <h2 style="font-size: 2rem;">94/100</h2>
+            </div>
+            <div class="card">
+                <p>Verified Proofs</p>
+                <h2 style="font-size: 2rem;">124</h2>
+            </div>
+        </div>
+        <div class="card">
+            <h3>Recent Activity</h3>
+            <p style="margin-top: 10px; color: #666;">Blockchain Ledger synced 2 minutes ago...</p>
+        </div>
     </div>
 
-    <div id="proofList"></div>
-  </div>
-</section>
+    <div id="funds" class="tab-content">
+        <h1>Fund Tracking</h1>
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px;">
+            <div class="card">
+                <h3>Utilization History</h3>
+                <canvas id="utilizationChart" height="150"></canvas>
+            </div>
+            <div class="card">
+                <h3>Live Balance</h3>
+                <h2 style="color: var(--dark-green);">₹8,45,000</h2>
+                <ul style="margin-top: 20px; list-style: none;">
+                    <li style="margin-bottom: 10px;">🟢 Project A: 60%</li>
+                    <li style="margin-bottom: 10px;">🟡 Salaries: 25%</li>
+                    <li>⚪ Admin: 15%</li>
+                </ul>
+            </div>
+        </div>
+    </div>
 
-<!-- MODAL -->
-<div class="modal" id="proofModal">
-  <div class="modal-content">
-    <h3>Post Proof</h3>
+    <div id="ai-chat" class="tab-content">
+        <h1>Trace AI Assistant</h1>
+        <div class="card" style="height: 500px; display: flex; flex-direction: column;">
+            <div id="ai-messages" class="chat-messages" style="background: #f9f9f9;">
+                <div class="msg received">Hello! I am the Trace AI Bot. I can help you analyze grants, check DARPAN compliance, or detect financial risks. How can I help?</div>
+            </div>
+            <div style="padding: 20px; display: flex; gap: 10px; border-top: 1px solid #eee;">
+                <input type="text" id="ai-input" placeholder="Ask about grants, compliance, or risks...">
+                <button onclick="sendAiMsg()" class="btn-primary" style="width: 80px;"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
 
-    <form id="proofForm">
-      {% csrf_token %}
-      <input name="title" placeholder="Project title" required>
-      <textarea name="description" placeholder="Description" required></textarea>
-      <input type="file" name="image">
+    <div id="chat" class="tab-content">
+        <h1>Inbound Communications</h1>
+        <div class="chat-container">
+            <div class="chat-list">
+                <div class="chat-item active">
+                    <strong>Rahul S.</strong><br><small>Re: Tax Receipt 80G</small>
+                </div>
+                <div class="chat-item">
+                    <strong>Priya V.</strong><br><small>Query on Project Update</small>
+                </div>
+            </div>
+            <div class="chat-main">
+                <div class="chat-messages">
+                    <div class="msg received">Hi, I haven't received my 80G tax certificate for my last donation of ₹5,000.</div>
+                    <div class="msg sent">Hello Rahul! Our system has processed it. You can download it directly from your donor dashboard now.</div>
+                </div>
+                <div style="padding: 20px; border-top: 1px solid #eee; display: flex; gap: 10px;">
+                    <input type="text" placeholder="Type a reply to Rahul...">
+                    <button class="btn-primary" style="width: 100px;">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-      <div class="modal-actions">
-        <button type="submit" class="primary-btn">Submit</button>
-        <button type="button" class="secondary-btn" id="closeProof">Cancel</button>
-      </div>
-    </form>
-  </div>
-</div>
+    <div id="upgrade" class="tab-content">
+        <h1>Scale Your Impact</h1>
+        <div class="pricing-grid">
+            <div class="price-card">
+                <h3>Silver</h3>
+                <h2>Free</h2>
+                <ul class="price-features">
+                    <li><i class="fas fa-check"></i> Basic Ledger Tracking</li>
+                    <li><i class="fas fa-check"></i> Grant Management Tool</li>
+                    <li><i class="fas fa-times" style="color: #ccc;"></i> AI Powered Risk Alerts</li>
+                </ul>
+                <button class="btn-outline">Current Plan</button>
+            </div>
+            <div class="price-card featured">
+                <div style="position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: var(--accent-gold); color: var(--dark-green); padding: 5px 15px; border-radius: 20px; font-weight: bold; font-size: 0.8rem;">MOST POPULAR</div>
+                <h3 style="color: var(--accent-gold);">Gold</h3>
+                <h2>₹1,999<span style="font-size: 1rem; color: var(--gray);">/mo</span></h2>
+                <ul class="price-features">
+                    <li><i class="fas fa-check"></i> Total Financial Management</li>
+                    <li><i class="fas fa-check"></i> AI Powered Tools</li>
+                    <li><i class="fas fa-check"></i> Automated Risk Alerts</li>
+                </ul>
+                <button class="btn-primary" style="background: var(--accent-gold); color: var(--dark-green);">Upgrade to Gold</button>
+            </div>
+            <div class="price-card">
+                <h3>Diamond</h3>
+                <h2>Custom</h2>
+                <ul class="price-features">
+                    <li><i class="fas fa-check"></i> Everything in Gold</li>
+                    <li><i class="fas fa-check"></i> Dedicated Human Auditor</li>
+                    <li><i class="fas fa-check"></i> Consultancy Services</li>
+                </ul>
+                <button class="btn-outline">Contact Sales</button>
+            </div>
+        </div>
+    </div>
 
-
+    <div id="settings" class="tab-content">
+        <h1>Support & Contact</h1>
+        <div class="card">
+            <h3>Get in Touch</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 20px;">
+                <div>
+                    <label>Your Query</label>
+                    <select><option>Billing & Subscription</option><option>Technical Support</option><option>Compliance Help</option></select>
+                    <label>Description</label>
+                    <textarea rows="4" placeholder="How can our team help you?"></textarea>
+                    <button class="btn-primary" style="margin-top: 15px;" onclick="alert('Ticket Submitted!')">Submit Inquiry</button>
+                </div>
+                <div style="background: #f9f9f0; padding: 25px; border-radius: 20px; border: 1px solid #eee;">
+                    <h4>Official Channels</h4>
+                    <p style="margin: 15px 0;"><i class="fas fa-envelope"></i> support@trace.org</p>
+                    <p style="margin: 15px 0;"><i class="fas fa-phone"></i> +91 1800-TRACE-NGO</p>
+                    <p style="margin: 15px 0;"><i class="fas fa-map-marker-alt"></i> BKC, Mumbai, Maharashtra</p>
+                </div>
+            </div>
+        </div>
+    </div>
 </main>
 
-<script src="dashboard.js"></script>
+<script>
+    // TAB LOGIC
+    function showTab(tabId) {
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        
+        document.getElementById(tabId).classList.add('active');
+        
+        // Find and highlight the correct nav item
+        const items = document.querySelectorAll('.nav-item');
+        const map = {'overview':0, 'funds':1, 'ai-chat':2, 'chat':3, 'upgrade':4, 'settings':5};
+        if(map[tabId] !== undefined) items[map[tabId]].classList.add('active');
+
+        if(tabId === 'funds') initFundsChart();
+    }
+
+    // AI BOT LOGIC
+    function sendAiMsg() {
+        const input = document.getElementById('ai-input');
+        const box = document.getElementById('ai-messages');
+        if(!input.value.trim()) return;
+
+        box.innerHTML += `<div class="msg sent">${input.value}</div>`;
+        const query = input.value.toLowerCase();
+        input.value = "";
+
+        setTimeout(() => {
+            let reply = "I'm analyzing your data. Please upgrade to Gold for advanced automated risk detection.";
+            if(query.includes("grant")) reply = "You are currently eligible for 3 new environmental grants. Check your 'Grant Management' tool.";
+            if(query.includes("risk")) reply = "Scanning ledgers... Status: Healthy. No financial anomalies detected in the last 30 days.";
+            
+            box.innerHTML += `<div class="msg received">${reply}</div>`;
+            box.scrollTop = box.scrollHeight;
+        }, 1000);
+    }
+
+    // CHART LOGIC
+    let chartInstance = null;
+    function initFundsChart() {
+        const ctx = document.getElementById('utilizationChart').getContext('2d');
+        if(chartInstance) chartInstance.destroy();
+        
+        chartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+                datasets: [{
+                    label: 'Spent (₹)',
+                    data: [400000, 650000, 300000, 800000, 200000],
+                    backgroundColor: '#013220',
+                    borderRadius: 8
+                }]
+            },
+            options: { responsive: true, plugins: { legend: { display: false } } }
+        });
+    }
+
+    // Initial load
+    window.onload = () => { if(window.innerWidth < 1000) alert("Please use a desktop for the best dashboard experience."); };
+</script>
+
 </body>
 </html>
