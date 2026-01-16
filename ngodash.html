@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>NGO Dashboard | Trace</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="dashboard.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<nav id="nav">
+  <div class="nav-logo"><img src="navlogo.png"></div>
+  <div class="nav-links" id="navLinks">
+    <a href="index.html">Home</a>
+    <a href="ngodash.html" class="active">NGO Dashboard</a>
+  </div>
+  <div class="nav-actions">
+    <a href="#" class="login-btn">Logout</a>
+    <div class="hamburger" onclick="toggleMenu()">☰</div>
+  </div>
+</nav>
+
+<main class="container">
+
+<h1>NGO Dashboard</h1>
+<p class="subtitle">Merit & transparency overview</p>
+
+<section class="stats-grid">
+
+  <div class="stat-card green-1">
+    <p class="stat-label">Total Donations</p>
+    <h2 id="totalDonations">—</h2>
+  </div>
+
+  <div class="stat-card green-2">
+    <p class="stat-label">Merit Points</p>
+    <h2 id="meritPoints">—</h2>
+  </div>
+
+  <div class="stat-card green-3">
+    <p class="stat-label">Current Ranking</p>
+    <h2 id="currentRank">—</h2>
+  </div>
+
+</section>
+
+<div class="tabs">
+  <button class="tab active" data-tab="overview">Overview</button>
+  <button class="tab" data-tab="donations">Donations</button>
+  <button class="tab" data-tab="proof">Proof of Work</button>
+</div>
+
+<section id="overview" class="tab-content active">
+  <div class="card">
+    <h3>Merit Growth</h3>
+    <canvas id="meritChart"></canvas>
+  </div>
+</section>
+
+<section id="donations" class="tab-content">
+  <div class="card">
+    <table>
+      <thead>
+        <tr>
+          <th>Donor</th>
+          <th>Amount</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody id="ngoDonationTable"></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- PROOF TAB -->
+<section id="proof" class="tab-content">
+  <div class="card">
+    <div class="proof-header">
+      <h3>Proof of Work</h3>
+      <button class="primary-btn" id="openProofModal">Post Proof</button>
+    </div>
+
+    <div id="proofList"></div>
+  </div>
+</section>
+
+<!-- MODAL -->
+<div class="modal" id="proofModal">
+  <div class="modal-content">
+    <h3>Post Proof</h3>
+
+    <form id="proofForm">
+      {% csrf_token %}
+      <input name="title" placeholder="Project title" required>
+      <textarea name="description" placeholder="Description" required></textarea>
+      <input type="file" name="image">
+
+      <div class="modal-actions">
+        <button type="submit" class="primary-btn">Submit</button>
+        <button type="button" class="secondary-btn" id="closeProof">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+</main>
+
+<script src="dashboard.js"></script>
+</body>
+</html>

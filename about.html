@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About Trace</title>
+
+  <link rel="stylesheet" href="about.css">
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav id="nav">
+  <div class="nav-logo">
+    <img src="navlogo.png" alt="Trace Logo">
+  </div>
+
+  <div class="nav-links" id="navLinks">
+    <a href="index.html">Home</a>
+    <a href="about.html" class="active">About</a>
+    <a href="leaderboard.html">Ranking</a>
+    <a href="how-it-works.html">How it works</a>
+  </div>
+
+  <div class="nav-actions">
+    <a href="login.html" class="login-btn">Login</a>
+    <div class="hamburger" onclick="toggleMenu()">☰</div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="about-hero reveal">
+  <h1>About Trace</h1>
+  <p>Revolutionizing NGO financial transparency through trust & technology</p>
+</section>
+
+<!-- MISSION / VISION / VALUES -->
+<section class="us">
+  <div class="box reveal">
+    <div class="icon"><i class="fa-solid fa-bullseye"></i></div>
+    <h3>Our Mission</h3>
+    <p>To enable complete transparency where every donation is traceable.</p>
+  </div>
+
+  <div class="box reveal">
+    <div class="icon"><i class="fa-solid fa-eye"></i></div>
+    <h3>Our Vision</h3>
+    <p>A future where NGOs earn trust through verified impact.</p>
+  </div>
+
+  <div class="box reveal">
+    <div class="icon"><i class="fa-solid fa-heart"></i></div>
+    <h3>Our Values</h3>
+    <p>Transparency, accountability, and measurable social impact.</p>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="working">
+  <h3 class="reveal">How Trace Works</h3>
+
+  <div class="two">
+    <div class="box reveal" id="donor">
+      <h4>For Donors</h4>
+      <ul>
+        <li>Browse ranked NGOs</li>
+        <li>View verified proof of work</li>
+        <li>Track donation usage</li>
+        <li>Donate with confidence</li>
+      </ul>
+    </div>
+
+    <div class="box reveal" id="ngo">
+      <h4>For NGOs</h4>
+      <ul>
+        <li>Create verified NGO profile</li>
+        <li>Receive and track donations</li>
+        <li>Upload proof of work</li>
+        <li>Earn points & ranking</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<script src="about.js"></script>
+</body>
+</html>

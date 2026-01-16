@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>NGO Leaderboard | Trace</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="leaderboard.css">
+</head>
+<body>
+
+<nav id="nav">
+  <div class="nav-logo">
+    <img src="navlogo.png" alt="Trace Logo">
+  </div>
+
+  <div class="nav-links" id="navLinks">
+    <a href="index.html" class="active">Home</a>
+    <a href="about.html">About</a>
+    <a href="leaderboard.html">Ranking</a>
+    <a href="how-it-works.html">How it works</a>
+  </div>
+
+  <div class="nav-actions">
+    <!-- Login state (replace with profile after auth) -->
+    <a href="login.html" class="login-btn">Login</a>
+
+    <!-- Mobile -->
+    <div class="hamburger" onclick="toggleMenu()">☰</div>
+  </div>
+</nav>
+
+<div class="layout">
+
+  <!-- FILTER PANEL -->
+  <aside class="filters">
+    <h3>Filter NGOs</h3>
+
+    <input id="searchNGO" placeholder="Search NGO">
+
+    <label>NGO Type</label>
+    <select>
+      <option>All</option>
+      <option>Education</option>
+      <option>Healthcare</option>
+      <option>Environment</option>
+    </select>
+
+    <label>Country</label>
+    <select>
+      <option>All</option>
+      <option>India</option>
+      <option>Other</option>
+    </select>
+
+    <label>State</label>
+    <select>
+      <option>All</option>
+      <option>Maharashtra</option>
+      <option>Karnataka</option>
+      <option>Delhi</option>
+    </select>
+
+    <label>Sort</label>
+    <select>
+      <option>Highest Points</option>
+      <option>Lowest Points</option>
+    </select>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="content">
+
+    <!-- PODIUM -->
+    <section class="podium">
+
+      <div class="podium-card second">
+        <div class="avatar">HF</div>
+        <h4>Helping Hands</h4>
+        <span>1,820 pts</span>
+        <div class="bar">2</div>
+      </div>
+
+      <div class="podium-card first">
+        <div class="avatar">GE</div>
+        <h4>Green Earth</h4>
+        <span>1,950 pts</span>
+        <div class="bar">1</div>
+      </div>
+
+      <div class="podium-card third">
+        <div class="avatar">CF</div>
+        <h4>Care Foundation</h4>
+        <span>1,740 pts</span>
+        <div class="bar">3</div>
+      </div>
+
+    </section>
+
+    <!-- YOUR NGO -->
+    <section class="highlight pulse">
+      <strong>Your NGO</strong>
+      <span>Rank #12 · 1,120 points · Silver Level</span>
+    </section>
+
+    <!-- TABLE -->
+    <section class="table">
+
+      <div class="table-header">
+        <span>Rank</span>
+        <span>NGO</span>
+        <span>Type</span>
+        <span>Location</span>
+        <span>Points</span>
+      </div>
+
+      <div class="table-row" onclick="openProfile()">
+        <span>04 ↑</span>
+        <span>Hope India</span>
+        <span>Education</span>
+        <span>Maharashtra, IN</span>
+        <span>1,610</span>
+      </div>
+
+      <div class="table-row" onclick="openProfile()">
+        <span>05 ↓</span>
+        <span>Seva Trust</span>
+        <span>Healthcare</span>
+        <span>Karnataka, IN</span>
+        <span>1,520</span>
+      </div>
+
+      <div class="table-row" onclick="openProfile()">
+        <span>06</span>
+        <span>Udaan NGO</span>
+        <span>Women Empowerment</span>
+        <span>Delhi, IN</span>
+        <span>1,410</span>
+      </div>
+
+    </section>
+
+  </main>
+</div>
+
+<script src="leaderboard.js"></script>
+</body>
+</html>
